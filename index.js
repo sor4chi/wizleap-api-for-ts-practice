@@ -6,8 +6,7 @@ import * as path from "path";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const templateDirectory = resolve(process.cwd(), "");
-const dataJsonPath = join(templateDirectory, "data.json");
+const dataJsonPath = path.resolve(__dirname, "data.json");
 
 app.get("/", (req, res) => {
   try {

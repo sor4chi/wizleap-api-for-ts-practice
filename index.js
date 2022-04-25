@@ -9,6 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 const dataJsonPath = path.resolve(__dirname, "data.json");
 
 app.get("/", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     const data = fs.readFileSync(dataJsonPath, "utf8");
     res.send(data);
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     const data = fs.readFileSync(dataJsonPath, "utf8");
     const newData = JSON.parse(data);
@@ -30,6 +32,7 @@ app.post("/", (req, res) => {
 });
 
 app.post("/:id", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     const data = fs.readFileSync(dataJsonPath, "utf8");
     const newData = JSON.parse(data);
@@ -44,6 +47,7 @@ app.post("/:id", (req, res) => {
 });
 
 app.delete("/:id", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     const data = fs.readFileSync(dataJsonPath, "utf8");
     const newData = JSON.parse(data);

@@ -3,18 +3,18 @@
     "id": 1,
     "name": "Jhon",
     "lastname": "Doe",
-    "age": "25"
+    "age": 25
   },
   {
     "id": 2,
     "name": "Bob",
     "lastname": "Smith",
-    "age": "30"
+    "age": 30
   },
   {
     "id": 3,
     "name": "Kevin",
     "lastname": "Johnson",
-    "age": "35"
+    "age": 35
   }
 ]

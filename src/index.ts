@@ -12,9 +12,7 @@ app.get("/", (req: any, res: any) => {
   }
 });
 
-//app.listen(process.env.PORT || 3000);
-process.env.NOW_REGION ? (module.exports = app) : app.listen(3000);
-
-console.log("starts");
+const port = process.env.PORT || 3000;
+app.listen(port);
 
 export default app;

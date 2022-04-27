@@ -1,67 +1,71 @@
 const express = require("express");
+const sqlite3 = require("sqlite3");
 const app = express();
-const fs = require("fs");
-import * as path from "path";
+const path = require("path");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const dataJsonPath = path.resolve(__dirname, "data.json");
+const dbPath = path.resolve(__dirname, "db.sqlite3");
+const db = new sqlite3.Database(dbPath);
 
 app.get("/", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    const data = fs.readFileSync(dataJsonPath, "utf8");
-    res.send(data);
-  } catch (error) {
-    res.send(error);
-  }
+  db.all("SELECT * FROM users", (err, rows) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.send(rows);
+    }
+  });
 });
 
 app.post("/", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    const data = fs.readFileSync(dataJsonPath, "utf8");
-    const newData = JSON.parse(data);
-    newData.push(req.body);
-    fs.writeFileSync(dataJsonPath, JSON.stringify(newData));
-    res.send(newData);
-  } catch (error) {
-    res.send(error);
-  }
+  const { name, lastname, age } = req.body;
+  db.run(
+    "INSERT INTO users (name, lastname, age) VALUES (?, ?, ?)",
+    [name, lastname, age],
+    function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+      } else {
+        res.send("Success");
+      }
+    }
+  );
 });
 
 app.post("/:id", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    const data = fs.readFileSync(dataJsonPath, "utf8");
-    const newData = JSON.parse(data);
-    const id = req.params.id;
-    const newDataId = newData.findIndex((item) => item.id === id);
-    newData[newDataId] = req.body;
-    fs.writeFileSync(dataJsonPath, JSON.stringify(newData));
-    res.send(newData);
-  } catch (error) {
-    res.send(error);
-  }
+  const { name, lastname, age } = req.body;
+  db.run(
+    "UPDATE users SET name = ?, lastname = ?, age = ? WHERE id = ?",
+    [name, lastname, age, req.params.id],
+    function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+      } else {
+        res.send("Success");
+      }
+    }
+  );
 });
 
 app.delete("/:id", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    const data = fs.readFileSync(dataJsonPath, "utf8");
-    const newData = JSON.parse(data);
-    const id = req.params.id;
-    const newDataId = newData.findIndex((item) => item.id === id);
-    newData.splice(newDataId, 1);
-    fs.writeFileSync(dataJsonPath, JSON.stringify(newData));
-    res.send(newData);
-  } catch (error) {
-    res.send(error);
-  }
+  db.run("DELETE FROM users WHERE id = ?", [req.params.id], function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.send("Success");
+    }
+  });
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 app.listen(port);
-
-export default app;
